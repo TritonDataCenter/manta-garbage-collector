@@ -592,15 +592,25 @@ test('check metrics', function _testMetrics(t) {
     var metrics = uploader.metrics;
 
     function tGreater(metric, compare) {
-        if (typeof(compare) === 'number') {
-            t.ok(metrics[metric] > compare, metric + '(' + metrics[metric] +
-                ') > ' + compare);
-        } else if (typeof(compare) === 'string') {
-            t.ok(metrics[metric] > metrics[compare], metric +
-                '(' + metrics[metric] + ') > ' + compare + '(' +
-                metrics[compare] + ')');
+        if (typeof compare === 'number') {
+            t.ok(
+                metrics[metric] > compare,
+                metric + '(' + metrics[metric] + ') > ' + compare
+            );
+        } else if (typeof compare === 'string') {
+            t.ok(
+                metrics[metric] > metrics[compare],
+                metric +
+                    '(' +
+                    metrics[metric] +
+                    ') > ' +
+                    compare +
+                    '(' +
+                    metrics[compare] +
+                    ')'
+            );
         } else {
-            t.ok(false, 'bad tGreater type: ' + typeof(compare));
+            t.ok(false, 'bad tGreater type: ' + typeof compare);
         }
     }
 
@@ -610,8 +620,11 @@ test('check metrics', function _testMetrics(t) {
     tGreater('instrFileUploadSecondsTotal', 0);
     tGreater('instrFileUploadSuccessCountTotal', 0);
     tGreater('instrFileDeleteCountTotal', 0);
-    t.equal(metrics.instrFileDeleteErrorCountTotal, 0,
-        'expected 0 delete errors');
+    t.equal(
+        metrics.instrFileDeleteErrorCountTotal,
+        0,
+        'expected 0 delete errors'
+    );
     tGreater('watchedDirectoryCount', 2);
     tGreater('runCountTotal', 3);
     t.equal(metrics.runErrorCountTotal, 0, 'expected no errors running');
