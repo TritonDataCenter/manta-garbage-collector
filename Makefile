@@ -5,7 +5,7 @@
 #
 
 #
-# Copyright 2019 Joyent, Inc.
+# Copyright 2020 Joyent, Inc.
 #
 
 #
@@ -105,7 +105,6 @@ CATEST_FILES = 			$(shell find test -name '*.test.js')
 
 JS_FILES =			$(shell find cmd -name '*.js') \
 				$(shell find lib -name '*.js') \
-				$(shell find tools -name '*.js')
 
 BASH_FILES =			$(shell find tools -name "assign_shards_to_collectors.sh")
 
