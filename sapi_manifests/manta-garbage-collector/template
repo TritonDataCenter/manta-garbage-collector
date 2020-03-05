@@ -2,6 +2,7 @@
     "buckets_mdapi": {
         "options": {
             "cueballOptions": {
+                "defaultPort": 2030,
                 "resolvers": [
                     "nameservice.{{{DOMAIN_NAME}}}"
                 ]
