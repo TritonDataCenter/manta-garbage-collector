@@ -32,18 +32,33 @@ var logger = {
         return logger;
     },
     debug: function _debug() {
+        while (logs.debug.length > 100) {
+            logs.debug.pop();
+        }
         logs.debug.push(Array.from(arguments));
     },
     error: function _error() {
+        while (logs.error.length > 100) {
+            logs.error.pop();
+        }
         logs.error.push(Array.from(arguments));
     },
     info: function _info() {
+        while (logs.info.length > 100) {
+            logs.info.pop();
+        }
         logs.info.push(Array.from(arguments));
     },
     trace: function _trace() {
+        while (logs.trace.length > 100) {
+            logs.trace.pop();
+        }
         logs.trace.push(Array.from(arguments));
     },
     warn: function _warn() {
+        while (logs.warn.length > 100) {
+            logs.warn.pop();
+        }
         logs.warn.push(Array.from(arguments));
     }
 };
