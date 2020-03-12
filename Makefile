@@ -69,6 +69,7 @@ install: $(NODE_EXEC) $(STAMP_NODE_MODULES)
 	    $(ROOT)/package.json \
 	    $(ROOT)/sapi_manifests \
 	    $(ROOT)/smf \
+	    $(ROOT)/test \
 	    $(PROTO)$(PREFIX)/
 	cp $(ROOT)/build/node/bin/node $(PROTO)$(PREFIX)/bin/
 	chmod 755 $(PROTO)$(PREFIX)/bin/node

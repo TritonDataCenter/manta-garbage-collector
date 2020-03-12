@@ -30,7 +30,7 @@
     ],
     "options": {
         "record_read_batch_size": {{GC_RECORD_READ_BATCH_SIZE}},
-        "record_delete_delay": {{GC_RECORD_DELETE_DELAY}}
+        "record_read_wait_interval": {{GC_RECORD_READ_WAIT_INTERVAL}}
     },
     "sapi_url": "{{{SAPI_URL}}}",
     "instance": "{{auto.ZONENAME}}",
