@@ -85,7 +85,11 @@ function _createRecord(obj) {
     var record = {
         bucket: MORAY_BUCKET,
         _id: obj.id,
-        _etag: Math.random().toString(16).slice(2).toUpperCase().substr(0, 8),
+        _etag: Math.random()
+            .toString(16)
+            .slice(2)
+            .toUpperCase()
+            .substr(0, 8),
         _mtime: Date.now(),
         _txn_snap: null,
         _count: count
@@ -100,21 +104,24 @@ function _createRecord(obj) {
         dirname: dir,
         key: obj.key,
         headers: {},
-        mtime: record._mtime - Math.floor((Math.random() * 100000)),
+        mtime: record._mtime - Math.floor(Math.random() * 100000),
         name: path.basename(obj.key),
         creator: ownerId,
         owner: ownerId,
         roles: [],
         type: 'object',
-        contentLength: Math.floor((Math.random() * 1000000)),
-        contentMD5: crypto.createHash('md5').update(objectId).digest('base64'),
+        contentLength: Math.floor(Math.random() * 1000000),
+        contentMD5: crypto
+            .createHash('md5')
+            .update(objectId)
+            .digest('base64'),
         contentType: 'text/plain',
         etag: objectId,
         objectId: objectId
     };
 
     record.value.sharks = obj.sharks.map(function _sharkJumper(sId) {
-        return { datacenter: DATACENTER, manta_storage_id: sId + STOR_SUFFIX };
+        return {datacenter: DATACENTER, manta_storage_id: sId + STOR_SUFFIX};
     });
 
     return record;
@@ -122,10 +129,7 @@ function _createRecord(obj) {
 
 function _createTestDirs(t) {
     var dir;
-    var dirs = [
-        TEST_DIR,
-        TEST_DIR_INSTRUCTIONS
-    ];
+    var dirs = [TEST_DIR, TEST_DIR_INSTRUCTIONS];
     var i;
 
     for (i = 0; i < dirs.length; i++) {
@@ -167,20 +171,37 @@ function _checkValidInstrFile(t, file, cb) {
         if (!err) {
             lines = data.trim().split('\n');
 
-            t.ok(lines.length > 0, 'should have > 0 lines, saw: ' + lines.length);
+            t.ok(
+                lines.length > 0,
+                'should have > 0 lines, saw: ' + lines.length
+            );
 
             for (idx = 0; idx < lines.length; idx++) {
                 fields = lines[idx].split('\t');
 
                 t.equal(fields.length, 5, 'should have 5 fields');
-                expectedStorId = base.match(/^.*-mako-([0-9]+.*).instruction$/)[1];
-                t.equal(expectedStorId, fields[0], 'should have storId as fields[0]');
+                expectedStorId = base.match(
+                    /^.*-mako-([0-9]+.*).instruction$/
+                )[1];
+                t.equal(
+                    expectedStorId,
+                    fields[0],
+                    'should have storId as fields[0]'
+                );
+                // eslint-disable-next-line no-loop-func
                 t.doesNotThrow(function _checkOwner() {
                     assert.uuid(fields[1], 'fields[1]');
                     assert.uuid(fields[2], 'fields[2]');
                 }, 'owner and object should be UUIDs');
-                t.equal(MORAY_SHARD, fields[3], 'fields[3] should be our moray shard');
-                t.ok(fields[4].match(/^[0-9]+$/), 'fields[4] should be a number (found ' + fields[4] + ')');
+                t.equal(
+                    MORAY_SHARD,
+                    fields[3],
+                    'fields[3] should be our moray shard'
+                );
+                t.ok(
+                    fields[4].match(/^[0-9]+$/),
+                    'fields[4] should be a number (found ' + fields[4] + ')'
+                );
             }
         }
 
@@ -191,6 +212,7 @@ function _checkValidInstrFile(t, file, cb) {
 //
 // A slightly dumber moray client. This one we can make return what we want.
 //
+// eslint-disable-next-line no-unused-vars
 function DummyMorayClient(opts) {
     var self = this;
 
@@ -207,7 +229,11 @@ DummyMorayClient.prototype.once = function clientOnce(evt, callback) {
     throw new Error('BOOM');
 };
 
-DummyMorayClient.prototype.findObjects = function findObjects(bucket, filter, opts) {
+DummyMorayClient.prototype.findObjects = function findObjects(
+    bucket,
+    filter,
+    opts
+) {
     var self = this;
 
     var req = new DummyMorayClientReq();
@@ -222,7 +248,11 @@ DummyMorayClient.prototype.findObjects = function findObjects(bucket, filter, op
     return req;
 };
 
-DummyMorayClient.prototype.deleteMany = function deleteMany(bucket, filter, callback) {
+DummyMorayClient.prototype.deleteMany = function deleteMany(
+    bucket,
+    filter,
+    callback
+) {
     var self = this;
 
     if (self.emitter.listeners('deleteMany').length > 0) {
@@ -240,7 +270,7 @@ function DummyMorayClientReq() {
     var self = this;
 
     self.emitter = new EventEmitter();
-};
+}
 
 DummyMorayClientReq.prototype.once = function reqOnce(evt, callback) {
     var self = this;
@@ -257,7 +287,6 @@ DummyMorayClientReq.prototype.on = function reqOn(evt, callback) {
         // now that we've setup the on('record', ) watcher we want to actually
         // generate some records.
     }
-
 };
 
 DummyMorayClientReq.prototype.emit = function reqEmit(evt, obj) {
@@ -265,7 +294,6 @@ DummyMorayClientReq.prototype.emit = function reqEmit(evt, obj) {
 
     self.emit(evt, obj);
 };
-
 
 test('create testdirs', function _testCreateTestdirs(t) {
     t.doesNotThrow(function _callCreator() {
@@ -325,15 +353,22 @@ test('create GarbageDirConsumer', function _testCreateDirConsumer(t) {
 // don't send any results.
 //
 test('check findObjects requests', function _testFindObjectsRequests(t) {
-
     morayClient.emitter.once('findObjects', function _findObjects(obj) {
-        t.equal(obj.bucket, MORAY_BUCKET, 'Bucket should be manta_fastdelete_queue');
+        t.equal(
+            obj.bucket,
+            MORAY_BUCKET,
+            'Bucket should be manta_fastdelete_queue'
+        );
         t.equal(obj.filter, '(_id>=0)', 'Filter should be (_id>=0)');
 
         // obj.opts looks like: {"limit":42,"sort":{"attribute":"_id","order":"ASC"}}
         t.equal(obj.opts.sort.attribute, '_id', 'sort attribute should be _id');
         t.equal(obj.opts.sort.order, 'ASC', 'sort order should be ASC');
-        t.equal(obj.opts.limit, TEST_READ_BATCH_SIZE, 'limit should be set to parameter value');
+        t.equal(
+            obj.opts.limit,
+            TEST_READ_BATCH_SIZE,
+            'limit should be set to parameter value'
+        );
 
         runEmitter.once('run', function _onRun(_obj) {
             t.ifError(_obj.err, 'run: should be no error');
@@ -362,63 +397,104 @@ test('check findObjects requests with results', function _testFindObjectsRequest
     // The run will complete after we send 'end'
     runEmitter.once('run', function _onRun(obj) {
         var files = [];
-        var idx;
-        var keys;
 
         t.ifError(obj.err, 'run: should be no error');
-        t.equal(obj.deletes, numObjects, 'run: should be correct number of deletes');
-        t.equal(obj.reads, numObjects, 'run: should be correct number of reads');
-        t.equal(obj.writes, numObjects * 2, 'run: should be correct number of writes (copies = 2)');
+        t.equal(
+            obj.deletes,
+            numObjects,
+            'run: should be correct number of deletes'
+        );
+        t.equal(
+            obj.reads,
+            numObjects,
+            'run: should be correct number of reads'
+        );
+        t.equal(
+            obj.writes,
+            numObjects * 2,
+            'run: should be correct number of writes (copies = 2)'
+        );
 
         // Look at expected and confirm files look like what we expect.
-        vasync.forEachPipeline({
-            func: function _checkStor(storId, cb) {
-                var dir;
-                var entries;
+        vasync.forEachPipeline(
+            {
+                func: function _checkStor(storId, cb) {
+                    var dir;
 
-                dir = path.join(TEST_DIR_INSTRUCTIONS, storId + STOR_SUFFIX);
+                    dir = path.join(
+                        TEST_DIR_INSTRUCTIONS,
+                        storId + STOR_SUFFIX
+                    );
 
-                fs.readdir(dir, function _onReaddir(readdirErr, dirFiles) {
-                    if (readdirErr) {
-                        cb(new VError({ cause: readdirErr, info: { dir: dir, storId: storId }, name: 'FailedInstrReaddir' }, 'Failed to readdir ' + dir));
-                        return;
-                    }
+                    fs.readdir(dir, function _onReaddir(readdirErr, dirFiles) {
+                        if (readdirErr) {
+                            cb(
+                                new VError(
+                                    {
+                                        cause: readdirErr,
+                                        info: {dir: dir, storId: storId},
+                                        name: 'FailedInstrReaddir'
+                                    },
+                                    'Failed to readdir ' + dir
+                                )
+                            );
+                            return;
+                        }
 
-                    files = files.concat(dirFiles.map(function _makeAbsolute(p) {
-                        return path.join(dir, p);
-                    }));
+                        files = files.concat(
+                            dirFiles.map(function _makeAbsolute(p) {
+                                return path.join(dir, p);
+                            })
+                        );
 
-                    cb();
-                });
-            },
-            inputs: Object.keys(expectedFiles)
-        }, function _foundAllFiles(findErr) {
-            t.ifError(findErr, 'found all expected instr files');
-            if (findErr) {
-                t.end();
-                return;
-            }
-
-            vasync.forEachPipeline({
-                func: function _checkInstrFile(file, cb) {
-                    _checkValidInstrFile(t, file, cb);
+                        cb();
+                    });
                 },
-                inputs: files
-            }, function _checkedAllFiles(checkErr) {
-                t.ifError(checkErr, 'checked all instr files');
-                t.end();
-            });
-        });
+                inputs: Object.keys(expectedFiles)
+            },
+            function _foundAllFiles(findErr) {
+                t.ifError(findErr, 'found all expected instr files');
+                if (findErr) {
+                    t.end();
+                    return;
+                }
+
+                vasync.forEachPipeline(
+                    {
+                        func: function _checkInstrFile(file, cb) {
+                            _checkValidInstrFile(t, file, cb);
+                        },
+                        inputs: files
+                    },
+                    function _checkedAllFiles(checkErr) {
+                        t.ifError(checkErr, 'checked all instr files');
+                        t.end();
+                    }
+                );
+            }
+        );
     });
 
-    morayClient.emitter.once('deleteMany', function _findObjects(bucket, filter, callback) {
+    morayClient.emitter.once('deleteMany', function _findObjects(
+        bucket,
+        filter,
+        callback
+    ) {
         var deleteIds;
 
         t.equal(bucket, MORAY_BUCKET, 'should be deleting from correct bucket');
         // LDAP is the worst
-        t.ok(filter.match(/^\(\|(\(_id=[0-9]+\))+\)$/),
-            'should delete based on an LDAP filter');
-        deleteIds = filter.replace(/[^0-9]/g, ' ').trim().split(/\s*/).map(function (_id) { return Number(_id); });
+        t.ok(
+            filter.match(/^\(\|(\(_id=[0-9]+\))+\)$/),
+            'should delete based on an LDAP filter'
+        );
+        deleteIds = filter
+            .replace(/[^0-9]/g, ' ')
+            .trim()
+            .split(/\s*/)
+            .map(function(_id) {
+                return Number(_id);
+            });
 
         ids.sort();
         deleteIds.sort();
@@ -431,7 +507,7 @@ test('check findObjects requests with results', function _testFindObjectsRequest
     morayClient.emitter.once('findObjects', function _findObjects(obj) {
         vasync.whilst(
             function _checkDone() {
-                return (numObjectsReturned < numObjects);
+                return numObjectsReturned < numObjects;
             },
             function _addRecord(cb) {
                 var recObj;
@@ -460,7 +536,7 @@ test('check findObjects requests with results', function _testFindObjectsRequest
                     cb();
                 }, 5);
             },
-            function _whilstDone(err) {
+            function _whilstDone() {
                 // All done, send an end
                 setTimeout(function _endReq() {
                     obj.req.emitter.emit('end');
@@ -481,7 +557,13 @@ test('stop GarbageDirConsumer', function _testStopDirConsumer(t) {
 test('delete testdirs', function _testDeleteTestdirs(t) {
     var disabled = Boolean(process.env.NO_DELETE);
 
-    t.ok(true, 'delete of testdirs (env NO_DELETE is' + (!disabled ? ' not' : '') + ' set)', {skip: disabled});
+    t.ok(
+        true,
+        'delete of testdirs (env NO_DELETE is' +
+            (!disabled ? ' not' : '') +
+            ' set)',
+        {skip: disabled}
+    );
 
     if (!disabled) {
         t.doesNotThrow(function _callDeleter() {
