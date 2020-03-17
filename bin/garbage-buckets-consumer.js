@@ -24,7 +24,7 @@
 // The Instructions files have:
 //
 //  * storageId
-//  * objectId
+//  * "DELETEv2"
 //  * object path
 //  * shardId
 //  * bytes (for metrics/auditing)
