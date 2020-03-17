@@ -19,9 +19,6 @@ NAME=manta-garbage-collector
 # Once each time we (re)provision the "garbage-collector" zone this script will
 # run and perform the setup functions.
 #
-# (Installed as "setup.sh" which is the standard name, and this will be executed
-# by the "user-script")
-#
 
 SPOOL_DIR="/var/spool/manta_gc"
 SVC_ROOT="/opt/smartdc/$NAME"
@@ -32,7 +29,6 @@ SVC_ROOT="/opt/smartdc/$NAME"
 #
 paths=(
     "$SVC_ROOT/bin"
-    "$SVC_ROOT/node/bin"
     "/opt/local/bin"
     "/opt/local/sbin"
     "/usr/sbin"
@@ -58,24 +54,17 @@ manta_common_presetup
 
 manta_add_manifest_dir "/opt/smartdc/$NAME"
 
-manta_common_setup 'garbage-collector'
+manta_common2_setup 'garbage-collector'
 
 #
-# XXX WTF
+# Override the PATH 'manta_update_env' from manta-scripts.
 #
-# Replace the contents of PATH from the default root user .bashrc with one
-# more appropriate for this particular zone.
+# We don't want ".../node_modules/.bin" or the obsolete
+# "/opt/smartdc/configurator/bin" on the PATH.
 #
-if ! /usr/bin/ed -s '/root/.bashrc'; then
-    fatal 'could not modify .bashrc'
-fi <<EDSCRIPT
-/export PATH/d
-a
-export PATH="$PATH"
-.
-w
-EDSCRIPT
-
+echo "" >>/root/.bashrc
+echo "# Override PATH set by manta-scripts." >>/root/.bashrc
+echo "export PATH=$PATH" >>/root/.bashrc
 
 #
 # Setup the delegated dataset for storing the garbage-collector instruction
@@ -116,4 +105,8 @@ done
 #
 mdata-put metricPorts "8881,8882,8883"
 
-manta_common_setup_end
+manta_common2_setup_log_rotation "garbage-uploader"
+manta_common2_setup_log_rotation "garbage-dir-consumer"
+manta_common2_setup_log_rotation "garbage-buckets-consumer"
+
+manta_common2_setup_end

@@ -109,8 +109,7 @@ function main() {
                 },
                 function _validateConfig(ctx, cb) {
                     common.validateConfig(ctx.config, function _onValidated(
-                        err,
-                        res
+                        err
                     ) {
                         cb(err);
                     });

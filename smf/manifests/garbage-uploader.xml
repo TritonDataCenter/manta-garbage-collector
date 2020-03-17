@@ -24,7 +24,7 @@
             <method_context>
                 <method_environment>
                     <envvar name="HOME" value="/root" />
-                    <envvar name="PATH" value="/opt/smartdc/manta-garbage-collector/bin:/opt/smartdc/manta-garbage-collector/node/bin:/opt/local/bin:/opt/local/sbin:/usr/sbin:/usr/bin:/sbin" />
+                    <envvar name="PATH" value="/opt/smartdc/manta-garbage-collector/bin:/opt/local/bin:/opt/local/sbin:/usr/sbin:/usr/bin:/sbin" />
                 </method_environment>
             </method_context>
         </exec_method>

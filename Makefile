@@ -58,8 +58,9 @@ AGENTS = amon config registrar
 all: $(STAMP_NODE_PREBUILT) $(STAMP_NODE_MODULES) install
 	$(NODE) --version
 
-.PHONY: install
-install: $(NODE_EXEC) $(STAMP_NODE_MODULES)
+.PHONY: release
+release: $(NODE_EXEC) $(STAMP_NODE_MODULES)
+	@echo "==> Building $(RELEASE_TARBALL)"
 	@$(ROOT)/build/node/bin/node ./node_modules/.bin/kthxbai
 	mkdir -p $(PROTO)$(PREFIX)
 	mkdir -p $(PROTO)$(PREFIX)/../boot
@@ -78,10 +79,6 @@ install: $(NODE_EXEC) $(STAMP_NODE_MODULES)
 	cp $(ROOT)/boot/*.sh $(PROTO)$(PREFIX)/scripts/
 	chmod 755 $(PROTO)$(PREFIX)/scripts/*.sh
 	(cd $(PROTO)$(PREFIX)/../boot && ln -s ../$(NAME)/scripts/{setup,configure}.sh .)
-
-.PHONY: release
-release: install
-	@echo "==> Building $(RELEASE_TARBALL)"
 	cd $(PROTO) && gtar -I pigz -cf $(TOP)/$(RELEASE_TARBALL) \
 	    --transform='s,^[^.],root/&,' \
 	    --owner=0 --group=0 \
@@ -107,7 +104,7 @@ fmt: | $(ESLINT)
 test:
 	@echo "To run tests, run:"
 	@echo ""
-	@echo "    ./bin/node test/*.test.js"
+	@echo "    ./bin/node node_modules/.bin/tap test/*.test.js"
 	@echo ""
 	@echo "from the /opt/smartdc/manta-garbage-collector directory on a garbage-collector instance."
 

@@ -19,13 +19,13 @@
 //
 // where they will be picked up and transferred to the storage zones for
 // processing. Once records are written out locally, they will be removed from
-// bbuckets-mdapi using the `deletegcbatch` RPC.
+// buckets-mdapi using the `deletegcbatch` RPC.
 //
 // The Instructions files have:
 //
 //  * storageId
 //  * objectId
-//  * creatorId/ownerId
+//  * object path
 //  * shardId
 //  * bytes (for metrics/auditing)
 //
@@ -89,8 +89,7 @@ function main() {
                 },
                 function _validateConfig(ctx, cb) {
                     common.validateConfig(ctx.config, function _onValidated(
-                        err,
-                        res
+                        err
                     ) {
                         cb(err);
                     });
@@ -164,10 +163,13 @@ function main() {
                     ) {
                         shard = ctx.config.buckets_shards[idx].host;
 
-                        childLog = logger.child({
-                            component: 'GarbageBucketsConsumer',
-                            shard: shard
-                        });
+                        childLog = logger.child(
+                            {
+                                component: 'GarbageBucketsConsumer',
+                                shard: shard
+                            },
+                            true
+                        );
 
                         gdc = new GarbageBucketsConsumer({
                             config: ctx.config,

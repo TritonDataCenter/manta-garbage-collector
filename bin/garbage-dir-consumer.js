@@ -91,8 +91,7 @@ function main() {
                 },
                 function _validateConfig(ctx, cb) {
                     common.validateConfig(ctx.config, function _onValidated(
-                        err,
-                        res
+                        err
                     ) {
                         cb(err);
                     });
@@ -162,10 +161,13 @@ function main() {
                     for (idx = 0; idx < ctx.config.dir_shards.length; idx++) {
                         shard = ctx.config.dir_shards[idx].host;
 
-                        childLog = logger.child({
-                            component: 'GarbageDirConsumer',
-                            shard: shard
-                        });
+                        childLog = logger.child(
+                            {
+                                component: 'GarbageDirConsumer',
+                                shard: shard
+                            },
+                            true
+                        );
 
                         gdc = new GarbageDirConsumer({
                             config: ctx.config,

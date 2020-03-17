@@ -10,8 +10,6 @@
 
 # Manta Garbage Collector
 
-## Overview
-
 This repository is part of the Joyent Manta project.  For contribution
 guidelines, issues, and general documentation, visit the main
 [Manta](http://github.com/joyent/manta) project page.
@@ -28,17 +26,19 @@ details on major Manta versions.
 - [`mantav1`](../../tree/mantav1/) - For development of mantav1, the long
   term support maintenance version of Manta.
 
-# Overview
+## Overview
 
-This repo contains the bulk of the code for the Manta v2 garbage collector
-system. At a high-level, this system looks like:
+This repo contains the bulk of the code for the Manta v2 garbage collector (GC)
+system. The GC system is responsible for deleting files from the Manta storage
+tier for objects that have been deleted in the metadata tier. At a high-level,
+this system looks like:
 
 ![GCv2 Overview](img/GCv2-overview.png)
 
-When a Directory-style object is deleted in Manta, the "metadata" for the object is removed
-(from the `manta` table) and this remove causes a record to be inserted into the
-`manta_fastdelete_queue` table via a database trigger. Each of these
-`manta_fastdelete_queue` records includes:
+When a Directory-style object is deleted in Manta, the "metadata" for the object
+is removed (from the `manta` table) and this removal causes a record to be
+inserted into the `manta_fastdelete_queue` table via a database trigger. Each of
+these `manta_fastdelete_queue` records includes:
 
  * a creator UUID
  * an owner UUID
@@ -53,3 +53,22 @@ actual files for the deleted objects. The `garbage-deleter` on the storage zone
 reads these instructions and does the actual deletion before deleting each
 instruction file.
 
+When a buckets object is deleted in Manta the metadata is removed from the
+buckets-mdapi and similar to the Directory-style a record is written that
+indicates an object is read for garbage collection. With buckets-mdapi garbage
+to be collected can be retrieved using the `getgcbatch` RPC. The garbage records
+return include:
+
+ * a bucket UUID
+ * an owner UUID
+ * an object UUID
+ * the "name" of the object
+ * a set of "sharks" (storageIds) representing `storage` servers with a copy of the object's data
+ * other metadata
+
+The `garbage-buckets-consumer` in the `garbage-collector` zone is responsible
+for calling the getgcbatch function and turning the results into local
+"instructions" files which are sent to the correct "mako" (storage zone) by the
+`garbage-uploader` service. The `garbage-deleter` on the storage zone will then
+see these instructions and process them just like it does for Directory-style
+garbage deletion instructions.
