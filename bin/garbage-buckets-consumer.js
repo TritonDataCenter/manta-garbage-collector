@@ -40,8 +40,7 @@
 //  * buckets_shards (array of objects with a 'host' (DNS hostname) property)
 //  * datacenter
 //  * instance
-//  * record_read_batch_delay
-//  * record_read_batch_size
+//  * buckets_batch_interval_ms
 //  * server_uuid
 //
 

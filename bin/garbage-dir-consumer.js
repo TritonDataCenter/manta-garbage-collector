@@ -41,8 +41,8 @@
 //  * dir_shards (array of objects with a 'host' (DNS hostname) property)
 //  * instance
 //  * moray (moray.options.cueballOptions.resolvers)
-//  * record_read_batch_delay
-//  * record_read_batch_size
+//  * dir_batch_interval_ms
+//  * dir_batch_size
 //  * server_uuid
 //
 

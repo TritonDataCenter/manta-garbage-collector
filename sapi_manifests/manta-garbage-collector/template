@@ -29,8 +29,16 @@
         }{{^last}},{{/last}}{{/GC_ASSIGNED_SHARDS}}
     ],
     "options": {
-        "record_read_batch_size": {{GC_RECORD_READ_BATCH_SIZE}},
-        "record_read_wait_interval": {{GC_RECORD_READ_WAIT_INTERVAL}}
+        {{#GC_DIR_BATCH_SIZE}}
+        "dir_batch_size": {{GC_DIR_BATCH_SIZE}},
+        {{/GC_DIR_BATCH_SIZE}}
+        {{#GC_DIR_BATCH_INTERVAL_MS}}
+        "dir_batch_interval_ms": {{GC_DIR_BATCH_INTERVAL_MS}},
+        {{/GC_DIR_BATCH_INTERVAL_MS}}
+        {{#GC_BUCKETS_BATCH_INTERVAL_MS}}
+        "buckets_batch_interval_ms": {{GC_BUCKETS_BATCH_INTERVAL_MS}},
+        {{/GC_BUCKETS_BATCH_INTERVAL_MS}}
+        "not_an_option": "only here because of JSON trailing comma behavior"
     },
     "sapi_url": "{{{SAPI_URL}}}",
     "instance": "{{auto.ZONENAME}}",

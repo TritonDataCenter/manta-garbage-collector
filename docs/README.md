@@ -126,7 +126,7 @@ At this point you should have `garbage-collector` instances but they will not
 yet be collecting any garbage. To have them start doing that, proceed to the
 next step.
 
-## Configuring garbage-collectors
+## Configuring garbage-collectors Shard Assignments
 
 There are 2 parts to updating the `garbage-collector` shard assignments. First
 you want to generate an assignment:
@@ -189,3 +189,61 @@ manta-oneach -s garbage-collector "json dir_shards buckets_shards < /opt/smartdc
 
 At this point garbage collection should be working for all deleted objects in
 both buckets and directory-style Manta.
+
+## Configuring garbage-collector Tunables
+
+With previous versions of GC, there were a large number of tunables on the SAPI
+`garbage-collector` service that are no longer relevant for GCv2 these include:
+
+ * `GC_ASSIGNED_BUCKET`
+ * `GC_ASSIGNED_SHARDS`
+ * `GC_CACHE_CAPACITY`
+ * `GC_CONCURRENCY`
+ * `GC_INSTR_UPLOAD_BATCH_SIZE`
+ * `GC_INSTR_UPLOAD_FLUSH_DELAY`
+ * `GC_INSTR_UPLOAD_PATH_PREFIX`
+ * `GC_RECORD_DELETE_BATCH_SIZE`
+ * `GC_RECORD_DELETE_DELAY`
+ * `GC_RECORD_READ_BATCH_SIZE`
+ * `GC_RECORD_READ_SORT_ATTR`
+ * `GC_RECORD_READ_SORT_ORDER`
+ * `GC_RECORD_READ_WAIT_INTERVAL`
+
+these can be removed once all your instances are updated to GCv2.
+
+The values on the SAPI *instance* for each garbage collector can have the
+following:
+
+      `GC_ASSIGNED_BUCKETS_SHARDS`
+      `GC_ASSIGNED_SHARDS`
+
+which should *NOT* be removed. These are managed by the `manta-adm gc update`
+command.
+
+There are currently the following tunables available for setting in SAPI for the
+`garbage-collector` service:
+
+ * `GC_DIR_BATCH_SIZE` - The number of records to read each time a GC batch is
+   requested from Moray by the `garbage-dir-consumer`. This value will be used
+   as the `limit:` parameter in the findObjects requests. Do not set this to
+   more than 1000.
+
+ * `GC_DIR_BATCH_INTERVAL_MS` - The number of milliseconds that
+   `garbage-dir-consumer` will wait between GC batch collections from Moray.
+   Increasing this will decrease the frequency of requests.
+
+ * `GC_BUCKETS_BATCH_INTERVAL_MS` - The number of milliseconds that
+   `garbage-buckets-consumer` will wait between GC batch collections from
+   buckets-mdapi. Increasing this value will decrease the frequency of requests.
+
+In order to set these values you can use the commands on the headnode:
+
+```
+GC_SERVICE_UUID=$(sdc-sapi /services?name=garbage-collector | json -H 0.uuid)
+echo "{\"metadata\": {\"GC_DIR_BATCH_SIZE\": 200}}" \
+   | sapiadm update ${GC_SERVICE_UUID}
+```
+
+Replacing `GC_DIR_BATCH_SIZE` with one of the valid tunables above, and
+replacing the number `200` with the intended value of that tunable.
+
