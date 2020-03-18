@@ -90,7 +90,7 @@ function main() {
             funcs: [
                 function _createLogger(_, cb) {
                     logger = common.createLogger({
-                        level: 'trace', // XXX temporary
+                        level: 'info',
                         name: SERVICE_NAME
                     });
 
@@ -143,11 +143,15 @@ function main() {
             ]
         },
         function _doneMain(err) {
+            if (err) {
+                logger.error(
+                    {elapsed: elapsedSince(beginning), err: err},
+                    'Startup failed.'
+                );
+                return;
+            }
             logger.info(
-                {
-                    elapsed: elapsedSince(beginning),
-                    err: err
-                },
+                {elapsed: elapsedSince(beginning)},
                 'Startup complete.'
             );
         }
