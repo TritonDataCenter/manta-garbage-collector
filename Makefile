@@ -55,7 +55,7 @@ BUILDIMAGE_PKGSRC = nginx-1.14.2 # used by tests to approximate mako
 AGENTS = amon config registrar
 
 .PHONY: all
-all: $(STAMP_NODE_PREBUILT) release
+all: $(STAMP_NODE_PREBUILT)
 	$(NODE) --version
 
 .PHONY: release

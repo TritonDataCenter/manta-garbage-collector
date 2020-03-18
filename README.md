@@ -55,7 +55,7 @@ instruction file.
 
 When a buckets object is deleted in Manta the metadata is removed from the
 buckets-mdapi and similar to the Directory-style a record is written that
-indicates an object is read for garbage collection. With buckets-mdapi garbage
+indicates an object is ready for garbage collection. With buckets-mdapi garbage
 to be collected can be retrieved using the `getgcbatch` RPC. The garbage records
 return include:
 
