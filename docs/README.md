@@ -184,7 +184,7 @@ which will apply the SAPI metadata changes in order to make the new
 configuration active. You should be able to confirm this by running:
 
 ```
-manta-oneach -s garbage-collector "json dir_shards buckets_shards < /opt/smartdc/manta-garbage-collector/etc/config.json
+manta-oneach -s garbage-collector "json dir_shards buckets_shards < /opt/smartdc/manta-garbage-collector/etc/config.json"
 ```
 
 At this point garbage collection should be working for all deleted objects in
