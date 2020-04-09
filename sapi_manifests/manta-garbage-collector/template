@@ -18,6 +18,16 @@
             }
         }
     },
+    "emoray": {
+        "options": {
+            "srvDomain": "{{ELECTRIC_MORAY}}",
+            "cueballOptions": {
+                "resolvers": [
+                    "nameservice.{{DOMAIN_NAME}}"
+                ]
+            }
+        }
+    },
     "buckets_shards": [{{#GC_ASSIGNED_BUCKETS_SHARDS}}
         {
             "host": "{{host}}"
