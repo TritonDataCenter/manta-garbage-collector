@@ -295,8 +295,7 @@ test('create GarbageBucketsConsumer', function _testCreateBucketsConsumer(t) {
         config: {
             instance: uuid(),
             options: {
-                record_read_batch_size: TEST_READ_BATCH_SIZE,
-                record_read_wait_interval: 1
+                buckets_batch_interval_ms: 1
             }
         },
         instructionRoot: TEST_DIR_INSTRUCTIONS,
