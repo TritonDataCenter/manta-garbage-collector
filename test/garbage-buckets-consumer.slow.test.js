@@ -27,7 +27,6 @@ var MDAPI_SHARD = '1.buckets-mdapi.test.joyent.us';
 var STOR_SUFFIX = '.stor.test.joyent.us';
 var TEST_DIR = path.join('/tmp', _randomString() + '.garbage-uploader-test');
 var TEST_DIR_INSTRUCTIONS = path.join(TEST_DIR, 'instructions');
-var TEST_READ_BATCH_SIZE = 42;
 
 var consumer;
 var logs = {
