@@ -60,7 +60,6 @@
         "not_an_option": "only here because of JSON trailing comma behavior"
     },
     "sapi_url": "{{{SAPI_URL}}}",
-    "storinfo_url": "{{{STORINFO_URL}}}",
     "instance": "{{auto.ZONENAME}}",
     "admin_ip": "{{auto.ADMIN_IP}}",
     "server_uuid": "{{auto.SERVER_UUID}}",
