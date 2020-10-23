@@ -28,10 +28,10 @@
 **/boray/bin
 
 # dtrace-provider
-**/dtrace-provider/build/{config.gypi,*.target.mk,gyp-flock-tool,binding.Makefile}
-**/dtrace-provider/build/Release/{.deps,obj.target,linker.lock}
-**/dtrace-provider/!(build|package.json|dtrace-provider.js|LICENSE)
-**/dtrace-provider/package.json.rej
+#**/dtrace-provider/build/{config.gypi,*.target.mk,gyp-flock-tool,binding.Makefile}
+#**/dtrace-provider/build/Release/{.deps,obj.target,linker.lock}
+#**/dtrace-provider/!(build|package.json|dtrace-provider.js|LICENSE)
+#**/dtrace-provider/package.json.rej
 
 # We don't even use yarn here.
 **/yarn.lock
